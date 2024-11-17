@@ -17,7 +17,8 @@ Heavily inspired by [Gyoo's CG DDR scraper](https://gist.github.com/Gyoo/b8be559
 
 # Notes
 
-- At the top of the script there's a constant `PAGE_LIMIT` that sets the maximum number of pages the script will read at a time. For example, suppose you're on page 1 of 20 of your scores.
+- At the top of the script there's a constant `PAGE_LIMIT` that sets the maximum number of pages the script will read at a time. For example, suppose you're on page 1 of 20 of your scores:
   - If `PAGE_LIMIT` is set to `10`, then the script will only export your scores from pages 1 to 10.
   - To export the rest, you have to visit page 11 (https://[...]/iidx/profile?page=11) and then click the button again.
   - You can increase this value for convenience but understand that the limit is there to avoid overloading the website.
+- Any scores on BEGINNER charts are ignored as Kamaitachi doesn't track them.
