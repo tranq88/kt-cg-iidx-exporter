@@ -1,15 +1,14 @@
 // ==UserScript==
 // @name     kt-cg-iidx-exporter
 // @author   tranq
-// @version  2
+// @version  3
 // @grant    none
 
-// @match    https://dev.cardinal-gate.net/iidx/profile
-// @match    https://dev.cardinal-gate.net/iidx/profile?*
-// @match    https://ganymede-cg.net/iidx/profile
-// @match    https://ganymede-cg.net/iidx/profile?*
-// @match    https://nageki-cg.net/iidx/profile
-// @match    https://nageki-cg.net/iidx/profile?*
+// @match    https://dev.cardinal-gate.net/iidx/profile*
+// @match    https://ganymede-cg.net/iidx/profile*
+// @match    https://www.ganymede-cg.net/iidx/profile*
+// @match    https://nageki-cg.net/iidx/profile*
+// @match    https://www.nageki-cg.net/iidx/profile*
 
 // @require  https://cdn.jsdelivr.net/npm/date-fns@3.6.0/cdn.min.js
 // @require  https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js
