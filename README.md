@@ -2,7 +2,7 @@
 
 Export your IIDX scores from CG into a BATCH-MANUAL JSON for use with [Kamaitachi](https://kamai.tachi.ac/). Works with all three CG instances.
 
-Heavily inspired by [Gyoo's CG DDR scraper](https://gist.github.com/Gyoo/b8be5590bc96c4a6f141ea63ff32fcc7).
+Heavily inspired by [Tina-otoge's CG SDVX scraper](https://gist.github.com/Tina-otoge/bb73a69db2b850c8a4a11bb99845df88).
 
 # Installation
 
