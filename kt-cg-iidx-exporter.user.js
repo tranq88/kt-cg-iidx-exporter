@@ -1,10 +1,12 @@
 // ==UserScript==
 // @name     kt-cg-iidx-exporter
 // @author   tranq
-// @version  3
+// @version  4
 // @grant    none
 
 // @match    https://dev.cardinal-gate.net/iidx/profile*
+// @match    https://cgate.dev/iidx/profile*
+// @match    https://www.cgate.dev/iidx/profile*
 // @match    https://ganymede-cg.net/iidx/profile*
 // @match    https://www.ganymede-cg.net/iidx/profile*
 // @match    https://nageki-cg.net/iidx/profile*
