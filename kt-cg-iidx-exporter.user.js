@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name     kt-cg-iidx-exporter
 // @author   tranq
-// @version  4
+// @version  5
 // @grant    none
 
 // @match    https://dev.cardinal-gate.net/iidx/profile*
@@ -19,8 +19,6 @@
 (() => {
   "use strict";
 
-  const SERVICE_NAME = "kt-cg-iidx-exporter";
-
   // do not abuse these!
   const SLEEP_TIME_BETWEEN_PAGES = 250;
   const PAGE_LIMIT = 10;
@@ -32,6 +30,25 @@
     A: "ANOTHER",
     L: "LEGGENDARIA",
   };
+
+  /**
+   * Determine the BATCH-MANUAL service name based on the current CG instance.
+   * @returns {string}
+   */
+  function getServiceName() {
+    let base = "kt-cg-iidx-exporter";
+    const url = window.location.href;
+
+    if (url.includes("dev")) {
+      base += " (Dev)";
+    } else if (url.includes("ganymede")) {
+      base += " (GAN)";
+    } else if (url.includes("nageki")) {
+      base += " (NAG)";
+    }
+
+    return base;
+  }
 
   /**
    * Send a message to the log under the export button.
@@ -220,7 +237,7 @@
       meta: {
         game: "iidx",
         playtype: "SP",
-        service: SERVICE_NAME,
+        service: getServiceName(),
       },
       scores: scores.SP,
     };
