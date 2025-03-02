@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name     kt-cg-iidx-exporter
 // @author   tranq
-// @version  5
+// @version  6
 // @grant    none
 
 // @match    https://dev.cardinal-gate.net/iidx/profile*
@@ -176,6 +176,16 @@
           .trim()
           .split(" ")[0],
       };
+
+      // cg displays unknown BP as "- MC"
+      const potentialBP = cells[2]
+        .querySelector("strong")
+        .title.split(",")[2]
+        .trim()
+        .split(" ")[0];
+      if (potentialBP != "-") {
+        scoreObj.optional = { bp: +potentialBP };
+      }
 
       const playstyle = cells[0]
         .querySelectorAll("strong")[1]
