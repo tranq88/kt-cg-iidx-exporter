@@ -33,6 +33,7 @@
 
   /**
    * Determine the BATCH-MANUAL service name based on the current CG instance.
+   *
    * @returns {string}
    */
   function getServiceName() {
@@ -52,6 +53,7 @@
 
   /**
    * Send a message to the log under the export button.
+   *
    * @param {string} txt
    */
   function log(txt) {
@@ -63,6 +65,7 @@
 
   /**
    * Wait for `ms` milliseconds.
+   *
    * @param {number} ms
    * @returns {Promise<any>}
    */
@@ -73,6 +76,7 @@
   /**
    * Return an object containing the current page number and the total number
    * of pages.
+   *
    * @returns { {currentPage: number; totalPages: number;} }
    */
   function getPageInfo() {
@@ -94,6 +98,7 @@
   /**
    * Return an array containing the pages to be queried.
    * The first page is always the current page.
+   *
    * @returns {number[]}
    */
   function getPageQueue() {
@@ -112,6 +117,7 @@
 
   /**
    * Convert a CG timestamp to unix milliseconds.
+   *
    * @param {string} date
    * @returns {number}
    */
@@ -125,6 +131,7 @@
 
   /**
    * Given the DOM of a page of scores, parse the scores into objects.
+   *
    * @param {Document} doc
    * @returns { {SP: object[]; DP: object[]} }
    */
@@ -203,6 +210,7 @@
 
   /**
    * Iterate over a set of pages and parse their scores.
+   *
    * @returns { Promise<{SP: object[]; DP: object[]}> }
    */
   async function fetchScoresForPages() {
