@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name     kt-cg-iidx-exporter
 // @author   tranq
-// @version  6
+// @version  7
 // @grant    none
 
 // @match    https://dev.cardinal-gate.net/iidx/profile*
@@ -132,6 +132,10 @@
   /**
    * Given the DOM of a page of scores, parse the scores into objects.
    *
+   * WARNING: In order to handle scores across different game versions,
+   * a custom property is added to each score object to allow for grouping.
+   * This property should be removed by the time the final JSON gets built.
+   *
    * @param {Document} doc
    * @returns { {SP: object[]; DP: object[]} }
    */
@@ -146,15 +150,22 @@
       .querySelectorAll(":scope > .grid-x");
 
     scoreDivs.forEach((div) => {
+      const cells = div.querySelectorAll(":scope > .cell");
+
       const scoreObj = {
+        // custom property
+        gameVerButThisShouldNotBeInTheFinalJson: cells[0]
+          .querySelector("a")
+          .href.split("/")[5],
+
         matchType: "inGameID",
       };
-      const cells = div.querySelectorAll(":scope > .cell");
 
       const difficulty =
         difficultyMap[
           cells[0].querySelectorAll("strong")[1].textContent.trim().slice(-1)
         ];
+
       // kt doesn't track beginner charts, so just ignore the score
       if (difficulty == "BEGINNER") {
         return;
@@ -244,36 +255,79 @@
   }
 
   /**
+   * Group score objects by their game versions and
+   * remove the custom property used.
+   *
+   * @param { {SP: object[]; DP: object[]} } scores
+   * @returns { Record<string, {SP: object[]; DP: object[]}> }
+   */
+  function groupScoresByGameVer(scores) {
+    const res = {};
+
+    for (const playtype of Object.keys(scores)) {
+      for (const score of scores[playtype]) {
+        const { gameVerButThisShouldNotBeInTheFinalJson, ...rest } = score;
+        const gameVer = gameVerButThisShouldNotBeInTheFinalJson;
+
+        if (!res[gameVer]) {
+          res[gameVer] = { SP: [], DP: [] };
+        }
+
+        res[gameVer][playtype].push(rest);
+      }
+    }
+
+    return res;
+  }
+
+  /**
    * Download all parsed scores to a JSON in BATCH-MANUAL format.
    */
   async function downloadScores() {
+    log(
+      "Starting script. Make sure to allow multiple downloads if you play on more than one game version and/or playtype (SP/DP)."
+    );
+
     const nowText = dateFns.format(new Date(), "yyyy-MM-dd-'at'-hh-mm-ss");
-    const scores = await fetchScoresForPages();
-    log(`Total SP: ${scores.SP.length}`);
-    log(`Total DP: ${scores.DP.length}`);
-    const batchJson = {
-      meta: {
-        game: "iidx",
-        playtype: "SP",
-        service: getServiceName(),
-      },
-      scores: scores.SP,
-    };
+    const scoresUngrouped = await fetchScoresForPages();
+    const scoresByGameVer = groupScoresByGameVer(scoresUngrouped);
 
-    let blob;
-    const blobType = "application/json;charset=utf-8";
-    if (scores.SP.length > 0) {
-      log("Generating SP file...");
-      blob = new Blob([JSON.stringify(batchJson, null, 2)], { type: blobType });
-      saveAs(blob, `export-cg-iidx-sp-${nowText}.json`);
-    }
-    if (scores.DP.length > 0) {
-      batchJson.meta.playtype = "DP";
-      batchJson.scores = scores.DP;
+    log(`Total SP: ${scoresUngrouped.SP.length}`);
+    log(`Total DP: ${scoresUngrouped.DP.length}`);
 
-      log("Generating DP file...");
-      blob = new Blob([JSON.stringify(batchJson, null, 2)], { type: blobType });
-      saveAs(blob, `export-cg-iidx-dp-${nowText}.json`);
+    // go by each game version and then by each playtype
+    for (const gameVer in scoresByGameVer) {
+      const scores = scoresByGameVer[gameVer];
+
+      const batchJson = {
+        meta: {
+          game: "iidx",
+          playtype: "SP",
+          service: getServiceName(),
+          version: gameVer,
+        },
+        scores: scores.SP,
+      };
+
+      let blob;
+      const blobType = "application/json;charset=utf-8";
+      if (scores.SP.length > 0) {
+        log(`Generating IIDX ${gameVer} SP file...`);
+        blob = new Blob([JSON.stringify(batchJson, null, 2)], {
+          type: blobType,
+        });
+        saveAs(blob, `export-cg-iidx${gameVer}-sp-${nowText}.json`);
+      }
+      if (scores.DP.length > 0) {
+        batchJson.meta.playtype = "DP";
+        batchJson.scores = scores.DP;
+
+        log(`Generating IIDX ${gameVer} DP file...`);
+        blob = new Blob([JSON.stringify(batchJson, null, 2)], {
+          type: blobType,
+        });
+        saveAs(blob, `export-cg-iidx${gameVer}-dp-${nowText}.json`);
+      }
     }
 
     log("Done!");
