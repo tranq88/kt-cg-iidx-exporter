@@ -194,11 +194,11 @@
         scoreObj.optional = { bp: +potentialBP };
       }
 
-      const playstyle = cells[0]
+      const playtype = cells[0]
         .querySelectorAll("strong")[1]
         .textContent.trim()
         .slice(0, 2);
-      if (playstyle == "SP") {
+      if (playtype == "SP") {
         scores.SP.push(scoreObj);
       } else {
         scores.DP.push(scoreObj);
